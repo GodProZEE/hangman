@@ -1,12 +1,13 @@
 require "json"
 class GameArea
-  attr_accessor :random_word, :blank_lines_for_word, :guesses_remaining, :blank_counter
+  attr_accessor :random_word, :blank_lines_for_word, :guesses_remaining, :blank_counter, :incorrect_letters
 
-  def initialize(random_word, guesses_remaining, blank_lines_for_word, _blank_counter)
+  def initialize(random_word, guesses_remaining, blank_lines_for_word, _blank_counter, incorrect_letters)
     @random_word = random_word
     @guesses_remaining = guesses_remaining
     @blank_lines_for_word = blank_lines_for_word
     @blank_counter = blank_lines_for_word.count("_")
+    @incorrect_letters = incorrect_letters.uniq
   end
 
   def self.new_display(random_word)
@@ -27,7 +28,11 @@ class GameArea
   end
 
   def check_guess(word, guess_letter)
-    word.include?(guess_letter)
+    return true if word.include?(guess_letter)
+
+    @incorrect_letters << guess_letter
+    @incorrect_letters = @incorrect_letters.uniq
+    false
   end
 
   # Create an array to note the lcoatiosn of the letters (due to repititions) to update them later
@@ -78,7 +83,8 @@ class GameArea
                            random_word: @random_word,
                            blank_lines_for_word: @blank_lines_for_word,
                            guesses_remaining: @guesses_remaining,
-                           blank_counter: @blank_counter
+                           blank_counter: @blank_counter,
+                           incorrect_letters: @incorrect_letters
                          })
   end
 
@@ -86,6 +92,7 @@ class GameArea
     file = File.open("lib/file#{number}.json", "r")
     data = JSON.load file
     p data
-    new(data["random_word"], data["guesses_remaining"], data["blank_lines_for_word"], data["blank_counter"])
+    new(data["random_word"], data["guesses_remaining"], data["blank_lines_for_word"], data["blank_counter"],
+        data["incorrect_letters"])
   end
 end

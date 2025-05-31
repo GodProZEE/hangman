@@ -7,7 +7,7 @@ dictionary = Dictionary.new("google-10000-english-no-swears.txt")
 def looping_through_game(game, word)
   game.display_blanks(game.blank_lines_for_word)
   puts "If at any point you wanna save, type 'save'"
-  p "Guesses remaining: #{game.guesses_remaining}, blank_counter: #{game.blank_counter}"
+  puts "Guesses remaining: #{game.guesses_remaining}, blank_counter: #{game.blank_counter}, incorrect letters: #{game.incorrect_letters}"
   while !game.blank_counter.zero? && !game.guesses_remaining.zero?
     guess_letter = game.make_guess
     p "Guess letter: #{guess_letter}"
@@ -17,7 +17,8 @@ def looping_through_game(game, word)
       break
     else
       game.update_display(game.blank_lines_for_word, game.random_word, guess_letter, game.blank_counter)
-      p "Guesses remaining: #{game.guesses_remaining}, blank_counter: #{game.blank_counter}"
+      puts "Guesses remaining: #{game.guesses_remaining}, blank_counter: #{game.blank_counter}, incorrect letters: #{game.incorrect_letters}"
+
     end
     if game.guesses_remaining.zero?
       puts "You kinda actually technically lost booooo"
@@ -38,7 +39,7 @@ def play_game(dictionary)
   game = if ask_to_load_data == true
            GameArea.from_json(choose_number)
          else
-           GameArea.new(word, word.size + 10, GameArea.new_display(word), "")
+           GameArea.new(word, word.size + 10, GameArea.new_display(word), "", [])
          end
   looping_through_game(game, word)
 end
