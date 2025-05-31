@@ -21,7 +21,7 @@ class GameArea
   def make_guess
     puts "Please guess ONE letter"
 
-    guess = gets.chomp
+    guess = gets.chomp.downcase
     @guesses_remaining -= 1 if guess.size == 1
     guess
   end
